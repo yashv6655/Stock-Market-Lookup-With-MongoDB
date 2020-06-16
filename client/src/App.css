@@ -1,0 +1,382 @@
+.shadow {
+  color: white;
+  background-color: #282c34;
+  text-shadow: 5.25px 5.25px 2px #000000;
+}
+
+.text-style {
+  font-family: "Special Elite", cursive;
+  font-size: 3.25rem;
+  text-transform: capitalize;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.plot-stock {
+  position: absolute;
+  right: 0;
+  width: 35rem;
+  height: 35rem;
+  padding: 10px;
+  border-bottom: 1px solid;
+  margin-right: 3rem;
+  margin-top: 4rem;
+}
+
+.plot-sma {
+  position: absolute;
+  right: 0;
+  width: 35rem;
+  height: 35rem;
+  padding: 10px;
+  margin-top: 35rem;
+  margin-right: 25rem;
+  border-bottom: 1px solid;
+}
+
+.table-align {
+  position: absolute;
+  left: 0;
+  width: 35rem;
+  height: 35rem;
+  padding: 10px;
+  margin-top: 5rem;
+  margin-left: 0;
+}
+
+.company-news {
+  position: absolute;
+  margin-top: 70rem;
+  left: 1rem;
+  right: 1rem;
+  padding: 10px;
+  border: 1px solid;
+  box-shadow: 0 0 10px grey;
+  background-color: white;
+  width: auto;
+  height: auto;
+  display: inline-block;
+  border-radius: 15px 15px 15px 15px;
+  /* border-top: none; */
+  /* margin-top: 35rem; */
+}
+
+.display-div {
+  box-shadow: 0 0 10px grey;
+  background-color: white;
+  width: 35rem;
+  height: auto;
+  display: inline-block;
+  border-radius: 15px 15px 15px 15px;
+}
+
+/* @media screen and (max-width: 1250px) {
+  .plot-stock {
+    margin-top: 25rem;
+    left: 1rem;
+  }
+
+  .plot-sma {
+    margin-top: 55rem;
+    left: 0;
+  }
+
+  .company-news {
+    margin-top: 90rem;
+    margin-left: 0;
+  }
+} */
+
+.title-nav {
+  font-family: "Special Elite", cursive;
+  font-size: 2rem;
+  text-transform: capitalize;
+}
+
+li {
+  list-style: none;
+  margin-bottom: 3.5rem;
+}
+
+h2 {
+  margin-bottom: 1rem;
+}
+
+input {
+  width: auto;
+}
+
+.article-img {
+  height: 10rem;
+  width: 12rem;
+  position: relative;
+  left: 0;
+  margin-bottom: 0.75rem;
+  /* border: 1px solid #ddd; */
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.article-link {
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.article-link :hover {
+  color: #21ce99;
+}
+
+.navbar-component {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: black;
+  border-radius: 5px 0;
+}
+
+/* Learn Page Styling */
+
+.section {
+  padding: 4rem 0;
+}
+
+.section-title {
+  font-size: 2rem;
+  text-transform: capitalize;
+  letter-spacing: 0.3rem;
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.learn-section {
+  width: 85vw;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.learn-section p {
+  line-height: 2rem;
+  font-weight: 400;
+  letter-spacing: 2px;
+}
+
+.learn-section-btn {
+  margin: auto 16rem;
+}
+
+.learn-section-btn {
+  /* border-radius: 4px; */
+  /* background-color: #5ca1e1; */
+  border: none;
+  color: #fff;
+  text-align: center;
+  font-size: 32px;
+  /* padding: 16px; */
+  /* width: 220px; */
+  transition: all 0.5s;
+  cursor: pointer;
+  /* margin: 36px; */
+  box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.7);
+}
+
+.learn-section-btn {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.learn-section-btn:after {
+  content: "»";
+  position: absolute;
+  opacity: 0;
+  /* top: 14px; */
+  /* right: -20px; */
+  transition: 0.5s;
+}
+
+.learn-section-btn:hover {
+  padding-right: 24px;
+  padding-left: 8px;
+}
+
+.learn-section-btn:hover:after {
+  opacity: 1;
+  right: 10px;
+}
+
+/* End of Learn Page Styling */
+
+/* Register Styling */
+
+/* styling */
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, .5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, .6);
+  border-radius: 10px;
+}
+
+.login-box h2 {
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.login-box .user-box {
+  position: relative;
+}
+
+.login-box .user-box input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+
+.login-box .user-box label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: .5s;
+}
+
+.login-box .user-box input:focus~label,
+.login-box .user-box input:valid~label {
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
+
+.login-box form a {
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px;
+  color: #03e9f4;
+  font-size: 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: .5s;
+  margin-top: 40px;
+  letter-spacing: 4px
+}
+
+.login-box a:hover {
+  background: #03e9f4;
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #03e9f4,
+    0 0 25px #03e9f4,
+    0 0 50px #03e9f4,
+    0 0 100px #03e9f4;
+}
+
+.login-box a span {
+  position: absolute;
+  display: block;
+}
+
+.login-box a span:nth-child(1) {
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #03e9f4);
+  animation: btn-anim1 1s linear infinite;
+}
+
+@keyframes btn-anim1 {
+  0% {
+    left: -100%;
+  }
+
+  50%,
+  100% {
+    left: 100%;
+  }
+}
+
+.login-box a span:nth-child(2) {
+  top: -100%;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #03e9f4);
+  animation: btn-anim2 1s linear infinite;
+  animation-delay: .25s
+}
+
+@keyframes btn-anim2 {
+  0% {
+    top: -100%;
+  }
+
+  50%,
+  100% {
+    top: 100%;
+  }
+}
+
+.login-box a span:nth-child(3) {
+  bottom: 0;
+  right: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(270deg, transparent, #03e9f4);
+  animation: btn-anim3 1s linear infinite;
+  animation-delay: .5s
+}
+
+@keyframes btn-anim3 {
+  0% {
+    right: -100%;
+  }
+
+  50%,
+  100% {
+    right: 100%;
+  }
+}
+
+.login-box a span:nth-child(4) {
+  bottom: -100%;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(360deg, transparent, #03e9f4);
+  animation: btn-anim4 1s linear infinite;
+  animation-delay: .75s
+}
+
+@keyframes btn-anim4 {
+  0% {
+    bottom: -100%;
+  }
+
+  50%,
+  100% {
+    bottom: 100%;
+  }
+}
+
+/* End of Register Styling */
