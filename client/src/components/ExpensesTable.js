@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { set } from "mongoose";
 
 export default function ExpensesTable({
   users,
@@ -7,11 +8,53 @@ export default function ExpensesTable({
   userId,
   exportPassword,
 }) {
-  const [total, setTotoal] = useState("");
+  const [total, setTotoal] = useState(0);
   const [expenses, setExpenses] = useState([]);
   const [expensesName, setExpensesName] = useState("");
   const [expensesAmount, setExpensesAmount] = useState(0);
-  let tempTotal = 0;
+
+  const updateExpenses = async () => {
+    //console.log(expenses);
+    let tempTotal = 0;
+    await axios.get("/accounts").then((res) => {
+      setUsers(res.data);
+      users.map((user) => {
+        if (user._id === userId) {
+          user.expenses.map((expense) => {
+            tempTotal +=
+              parseFloat(expense.amount) + parseFloat(expenses[0].amount);
+            setTotoal(tempTotal);
+          });
+        }
+      });
+    });
+    return tempTotal;
+  };
+
+  const subtractExpenses = async (id) => {
+    //console.log(expenses);
+    let tempTotal = 0;
+
+    await axios.get("/accounts").then((res) => {
+      setUsers(res.data);
+      users.map((user) => {
+        if (user._id === userId) {
+          user.expenses.map((expense) => {
+            if (expense._id === id) {
+              let temp = expense.amount;
+              tempTotal = total - temp;
+              setTotoal(tempTotal);
+            }
+          });
+        }
+      });
+    });
+    return tempTotal;
+  };
+
+  useEffect(() => {
+    updateExpenses();
+  }, []);
 
   const addToList = () => {
     if (expensesName === "") {
@@ -27,9 +70,10 @@ export default function ExpensesTable({
               expenses: [...expenses, ...user.expenses],
               password: exportPassword,
               savings: [...user.savings],
+              stocks: [...user.stocks],
             })
             .then((res) => {
-              console.log(res);
+              //console.log(res);
             })
             .catch((err) => {
               console.log(err);
@@ -45,10 +89,7 @@ export default function ExpensesTable({
             .get("/accounts")
             .then((res) => {
               setUsers(res.data);
-              // user.expenses.map((expense) => {
-              //   tempTotal = tempTotal + expense.amount;
-              //   setTotoal(tempTotal);
-              // });
+              updateExpenses();
             })
             .catch((err) => console.log(err));
         }
@@ -57,19 +98,24 @@ export default function ExpensesTable({
   };
 
   const deleteFromList = (id) => {
-    console.log(id);
+    //console.log(id);
     users.map(async (user) => {
       if (user._id === userId) {
+        subtractExpenses(id);
         let tempExpenses = user.expenses.filter((item) => item._id !== id);
         await axios.put("/accounts/" + userId, {
           expenses: [...tempExpenses],
           password: exportPassword,
           savings: [...user.savings],
+          stocks: [...user.stocks],
         });
       }
       await axios
         .get("/accounts")
-        .then((res) => setUsers(res.data))
+        .then((res) => {
+          setUsers(res.data);
+          // updateExpenses();
+        })
         .catch((err) => console.log(err));
     });
   };
@@ -80,8 +126,7 @@ export default function ExpensesTable({
         setExpensesName("");
         setExpensesAmount(0);
         setExpenses([]);
-        setTotoal(0);
-        //tempTotal = 0;
+        setTotoal([]);
         await axios
           .put("/accounts/" + userId, {
             expenses: [],
@@ -89,12 +134,15 @@ export default function ExpensesTable({
             savings: [...user.savings],
             stocks: [...user.stocks],
           })
-          .then((res) => console.log(res))
+          .then((res) => {
+            //console.log(res)
+          })
           .catch((err) => console.log(err));
         await axios
           .get("/accounts")
           .then((res) => {
             setUsers(res.data);
+            //updateExpenses();
           })
           .catch((err) => console.log(err));
       }
