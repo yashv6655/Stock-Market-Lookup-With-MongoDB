@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { set } from "mongoose";
+import { useContext } from "react";
+import { FinanceContext } from "../pages/FinancialSituation";
 
 export default function ExpensesTable({
   users,
@@ -8,10 +10,12 @@ export default function ExpensesTable({
   userId,
   exportPassword,
 }) {
-  const [total, setTotoal] = useState(0);
+  const [total, setTotal] = useState(0);
   const [expenses, setExpenses] = useState([]);
   const [expensesName, setExpensesName] = useState("");
   const [expensesAmount, setExpensesAmount] = useState(0);
+
+  const { setExpensesTotal } = useContext(FinanceContext);
 
   const updateExpenses = async () => {
     //console.log(expenses);
@@ -23,7 +27,8 @@ export default function ExpensesTable({
           user.expenses.map((expense) => {
             tempTotal +=
               parseFloat(expense.amount) + parseFloat(expenses[0].amount);
-            setTotoal(tempTotal);
+            setTotal(tempTotal);
+            setExpensesTotal(tempTotal);
           });
         }
       });
@@ -32,7 +37,6 @@ export default function ExpensesTable({
   };
 
   const subtractExpenses = async (id) => {
-    //console.log(expenses);
     let tempTotal = 0;
 
     await axios.get("/accounts").then((res) => {
@@ -43,7 +47,8 @@ export default function ExpensesTable({
             if (expense._id === id) {
               let temp = expense.amount;
               tempTotal = total - temp;
-              setTotoal(tempTotal);
+              setTotal(tempTotal);
+              setExpensesTotal(tempTotal);
             }
           });
         }
@@ -52,9 +57,7 @@ export default function ExpensesTable({
     return tempTotal;
   };
 
-  useEffect(() => {
-    updateExpenses();
-  }, []);
+  // useEffect(() => updateExpenses(), []);
 
   const addToList = () => {
     if (expensesName === "") {
@@ -126,7 +129,8 @@ export default function ExpensesTable({
         setExpensesName("");
         setExpensesAmount(0);
         setExpenses([]);
-        setTotoal([]);
+        setTotal(0);
+        setExpensesTotal(0);
         await axios
           .put("/accounts/" + userId, {
             expenses: [],

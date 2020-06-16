@@ -5,9 +5,15 @@ import { userId, exportPassword } from "./LoginForm";
 import ExpensesTable from "../components/ExpensesTable";
 import SavingsTable from "../components/SavingsTable";
 import StocksTable from "../components/StocksTable";
+import { createContext } from "react";
+
+const FinanceContext = createContext();
 
 export default function FinancialSituation() {
   const [users, setUsers] = useState([]);
+  const [expensesTotal, setExpensesTotal] = useState(0);
+  const [savingsTotal, setSavingsTotal] = useState(0);
+  const [stocksTotal, setStocksTotal] = useState(0);
 
   useEffect(() => {
     axios.get("/accounts").then((res) => {
@@ -17,27 +23,46 @@ export default function FinancialSituation() {
   }, []);
 
   return (
-    <div className="col-sm">
-      <div className="d-flex justify-content-center row">
-        <ExpensesTable
-          users={users}
-          setUsers={setUsers}
-          userId={userId}
-          exportPassword={exportPassword}
-        />
-        <SavingsTable
-          users={users}
-          setUsers={setUsers}
-          userId={userId}
-          exportPassword={exportPassword}
-        />
-        <StocksTable
-          users={users}
-          setUsers={setUsers}
-          userId={userId}
-          exportPassword={exportPassword}
-        />
+    <FinanceContext.Provider
+      value={{ setExpensesTotal, setSavingsTotal, setStocksTotal }}
+    >
+      <div className="col-sm">
+        <div className="d-flex justify-content-center row">
+          <SavingsTable
+            users={users}
+            setUsers={setUsers}
+            userId={userId}
+            exportPassword={exportPassword}
+          />
+          <ExpensesTable
+            users={users}
+            setUsers={setUsers}
+            userId={userId}
+            exportPassword={exportPassword}
+          />
+          <StocksTable
+            users={users}
+            setUsers={setUsers}
+            userId={userId}
+            exportPassword={exportPassword}
+          />
+        </div>
+        <div
+          style={{ background: "#b5b5b5" }}
+          className="d-flex py-2 text-white text-center justify-content-center row"
+        >
+          <p
+            className={
+              savingsTotal - expensesTotal >= 0
+                ? "lead text-success"
+                : "lead text-danger"
+            }
+          >
+            ${savingsTotal - expensesTotal}
+          </p>
+        </div>
       </div>
-    </div>
+    </FinanceContext.Provider>
   );
 }
+export { FinanceContext };

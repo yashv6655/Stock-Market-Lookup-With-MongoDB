@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useContext } from "react";
+import { FinanceContext } from "../pages/FinancialSituation";
 
 export default function SavingsTable({
   users,
@@ -8,9 +10,116 @@ export default function SavingsTable({
   exportPassword,
 }) {
   //Savings Properties
+  const [total, setTotal] = useState(0);
   const [savings, setSavings] = useState([]);
   const [savingsName, setSavingsName] = useState([]);
   const [savingsAmount, setSavingsAmount] = useState([]);
+
+  const { setSavingsTotal } = useContext(FinanceContext);
+
+  const updateSavings = async () => {
+    //console.log(savings);
+    let tempTotal = 0;
+    await axios.get("/accounts").then((res) => {
+      setUsers(res.data);
+      users.map((user) => {
+        if (user._id === userId) {
+          user.savings.map((saving) => {
+            tempTotal +=
+              parseFloat(saving.amount) + parseFloat(savings[0].amount);
+            setTotal(tempTotal);
+            setSavingsTotal(tempTotal);
+          });
+        }
+      });
+    });
+    return tempTotal;
+  };
+
+  const subtractSavings = async (id) => {
+    //console.log(savings);
+    let tempTotal = 0;
+
+    await axios.get("/accounts").then((res) => {
+      setUsers(res.data);
+      users.map((user) => {
+        if (user._id === userId) {
+          user.savings.map((saving) => {
+            if (saving._id === id) {
+              let temp = saving.amount;
+              tempTotal = total - temp;
+              setTotal(tempTotal);
+              setSavingsTotal(tempTotal);
+            }
+          });
+        }
+      });
+    });
+    return tempTotal;
+  };
+
+  const addToList = () => {
+    if (savingsName === "") {
+      alert("Field Can't be left blank");
+    } else {
+      users.map(async (user) => {
+        if (user._id === userId) {
+          savings.push({ name: savingsName, amount: savingsAmount });
+          setSavingsName("");
+          setSavingsAmount(0);
+          await axios
+            .put("/accounts/" + userId, {
+              expenses: [...user.expenses],
+              password: exportPassword,
+              savings: [...user.savings, ...savings],
+              stocks: [...user.stocks],
+            })
+            .then((res) => {
+              //console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+              alert(
+                "There Was An Error While Trying To Upload To The Database"
+              );
+            });
+
+          //To avoid duplication of data
+          setSavings([]);
+
+          await axios
+            .get("/accounts")
+            .then((res) => {
+              setUsers(res.data);
+              updateSavings();
+            })
+            .catch((err) => console.log(err));
+        }
+      });
+    }
+  };
+
+  const deleteFromList = (id) => {
+    //console.log(id);
+    users.map(async (user) => {
+      if (user._id === userId) {
+        subtractSavings(id);
+        let tempSavings = user.savings.filter((item) => item._id !== id);
+        await axios.put("/accounts/" + userId, {
+          expenses: [...user.expenses],
+          password: exportPassword,
+          savings: [...tempSavings],
+          stocks: [...user.stocks],
+        });
+      }
+      await axios
+        .get("/accounts")
+        .then((res) => {
+          setUsers(res.data);
+        })
+        .catch((err) => console.log(err));
+    });
+  };
 
   const clearList = () => {
     users.map(async (user) => {
@@ -18,8 +127,8 @@ export default function SavingsTable({
         setSavingsName("");
         setSavingsAmount(0);
         setSavings([]);
-        //setTotoal(0);
-        //tempTotal = 0;
+        setTotal(0);
+        setSavingsTotal(0);
         await axios
           .put("/accounts/" + userId, {
             expenses: [...user.expenses],
@@ -27,12 +136,15 @@ export default function SavingsTable({
             savings: [],
             stocks: [...user.stocks],
           })
-          .then((res) => console.log(res))
+          .then((res) => {
+            //console.log(res)
+          })
           .catch((err) => console.log(err));
         await axios
           .get("/accounts")
           .then((res) => {
             setUsers(res.data);
+            //updateSavings();
           })
           .catch((err) => console.log(err));
       }
@@ -46,7 +158,7 @@ export default function SavingsTable({
         <thead>
           <tr>
             <th scope="col" className="lead">
-              Savings
+              Saving
             </th>
             <th scope="col" className="lead">
               Amount
@@ -56,28 +168,44 @@ export default function SavingsTable({
         <tbody>
           <tr>
             <th scope="row">
-              <input className="form-control-calc" />
+              <input
+                className="form-control-calc"
+                type="text"
+                value={savingsName}
+                onChange={(e) => setSavingsName(e.target.value)}
+              />
             </th>
-            <td>Mark</td>
             <td>
-              <button className="fas fa-plus btn"></button>
+              <input
+                type="number"
+                className="form-control-calc"
+                value={savingsAmount}
+                onChange={(e) => setSavingsAmount(e.target.value)}
+                required
+              />
+            </td>
+            <td>
+              <button className="fas fa-plus btn" onClick={addToList}></button>
             </td>
           </tr>
-          {users.map((user, index) => {
+          {users.map((user) => {
             if (user._id === userId) {
-              return user.savings === null ? (
-                <tr key={index}>
-                  <th scope="row">Enter Expense Title</th>
-                  <td>Enter Expense Amount</td>
+              return user.savings === [] || user.savings === null ? (
+                <tr>
+                  <th scope="row">Enter Savings Title</th>
+                  <td>Enter Savings Amount</td>
                 </tr>
               ) : (
                 user.savings.map((saving, index) => {
                   return (
                     <tr key={index}>
                       <th scope="row">{saving.name}</th>
-                      <td>{saving.amount}</td>
+                      <td>${saving.amount}</td>
                       <td>
-                        <button className="fas fa-minus btn"></button>
+                        <button
+                          className="fas fa-minus btn"
+                          onClick={() => deleteFromList(saving._id)}
+                        ></button>
                       </td>
                     </tr>
                   );
@@ -87,7 +215,7 @@ export default function SavingsTable({
           })}
           <tr>
             <th scope="row">Total: </th>
-            <td>1111111111</td>
+            <td>${total}</td>
           </tr>
         </tbody>
       </table>
