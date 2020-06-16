@@ -37,7 +37,6 @@ export default function LoginForm() {
             } else {
               console.log("failed");
               setLoggedIn(false);
-              alert("Invalid Credentials");
             }
           });
         });

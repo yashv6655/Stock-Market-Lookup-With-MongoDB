@@ -25,6 +25,7 @@ export default function SavingsTable({
             expenses: [...user.expenses],
             password: exportPassword,
             savings: [],
+            stocks: [...user.stocks],
           })
           .then((res) => console.log(res))
           .catch((err) => console.log(err));

@@ -38,6 +38,7 @@ export default function ExpensesTable({
               );
             });
 
+          //To avoid duplication of data
           setExpenses([]);
 
           await axios
@@ -86,6 +87,7 @@ export default function ExpensesTable({
             expenses: [],
             password: exportPassword,
             savings: [...user.savings],
+            stocks: [...user.stocks],
           })
           .then((res) => console.log(res))
           .catch((err) => console.log(err));

@@ -43,6 +43,9 @@ export default function ForgotPassword() {
           axios
             .put("http://localhost:4000/accounts/" + userId, {
               password: password,
+              expenses: [...user.expenses],
+              savings: [...user.savings],
+              stocks: [...user.stocks],
             })
             .then((res) => {
               console.log(res);

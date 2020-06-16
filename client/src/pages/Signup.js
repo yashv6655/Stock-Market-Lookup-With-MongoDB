@@ -36,7 +36,7 @@ export default function Signup() {
           alert("Error. Please Try Again");
         });
     } else {
-      if (password.length < 7) alert("Password Isn't Secure enough");
+      if (password.length < 5) alert("Password Isn't Secure enough");
       else alert("Passwords Don't Match");
       console.log("failed to signup");
     }
@@ -45,7 +45,7 @@ export default function Signup() {
   const passwordCheck = () => {
     if (
       password === confirmPassword &&
-      password.length < 7 &&
+      password.length > 5 &&
       /[~`!#$%^&*+=\-[\]\\';,/{}|\\":<>?]/g.test(password)
     ) {
       return true;
