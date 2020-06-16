@@ -34,7 +34,7 @@ class Stock extends React.Component {
     const pointerToThis = this;
     //console.log(pointerToThis);
     const API_KEY = process.env.REACT_API_KEY;
-    const NEWS_API_KEY = process.env.REACT_NEWS_KEY;
+    const NEWS_API_KEY = process.env.REACT_APP_NEWS_KEY;
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, "0");
@@ -47,7 +47,6 @@ class Stock extends React.Component {
     // this.state.stockSymbolDisplay = stockSymbol;
     let API_Call_ALPHA = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${stockSymbol}&outputsize=${stockDisplaytype}&apikey=${API_KEY}`;
     let API_Call_SMA = `https://www.alphavantage.co/query?function=SMA&symbol=${stockSymbol}&interval=daily&time_period=2&series_type=open&apikey=${API_KEY}`;
-    //let API_CALL_NEWS = `http://newsapi.org/v2/everything?q=${stockSymbol}&from=${today}&to=${today}&sortBy=popularity&apiKey=932037be197c49ca8e3d65429af9b286`;
     let API_CALL_NEWS = `https://gnews.io/api/v3/search?q=${stockSymbol}&max=10&token=ffff71b35644b14ad953a6a4a594aea6`;
     let stockChartXValuesFunction = [];
     let stockChartYValuesFunction = [];
