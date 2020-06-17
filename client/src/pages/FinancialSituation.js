@@ -6,6 +6,7 @@ import ExpensesTable from "../components/ExpensesTable";
 import SavingsTable from "../components/SavingsTable";
 import StocksTable from "../components/StocksTable";
 import { createContext } from "react";
+import Alert from "../components/Alert";
 
 const FinanceContext = createContext();
 
@@ -27,6 +28,7 @@ export default function FinancialSituation() {
       value={{ setExpensesTotal, setSavingsTotal, setStocksTotal }}
     >
       <div className="col-sm">
+        <Alert userId={userId} />
         <div className="d-flex justify-content-center row">
           <SavingsTable
             users={users}

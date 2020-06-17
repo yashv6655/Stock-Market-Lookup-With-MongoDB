@@ -219,11 +219,11 @@ class Stock extends React.Component {
               {/* end of table */}
 
               {/* Start of Stock Graph */}
-              <div className="col-sm">
+              <div className="col-sm d-flex justify-content-center">
                 <div className="">
                   {/* w-50 mx-auto */}
                   <Plot
-                    className="ml-3 bg-light text-center"
+                    className=""
                     style={{ marginLeft: "0" }}
                     data={[
                       {
@@ -236,8 +236,8 @@ class Stock extends React.Component {
                       },
                     ]}
                     layout={{
-                      width: 450,
-                      height: 400,
+                      width: 365,
+                      height: 350,
                       title: `${this.state.title}'s Stock`,
                       titlefont: { size: 25 },
                       paper_bgcolor: "#f8f9fa",
@@ -264,8 +264,8 @@ class Stock extends React.Component {
                       },
                     ]}
                     layout={{
-                      width: 450,
-                      height: 400,
+                      width: 365,
+                      height: 350,
                       title: `${this.state.title}'s Full SMA History`,
                       titlefont: { size: 25 },
                       paper_bgcolor: "#f8f9fa",

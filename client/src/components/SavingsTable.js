@@ -190,7 +190,7 @@ export default function SavingsTable({
           </tr>
           {users.map((user) => {
             if (user._id === userId) {
-              return user.savings === [] || user.savings === null ? (
+              return user.savings.length === 0 || user.savings === null ? (
                 <tr>
                   <th scope="row">Enter Savings Title</th>
                   <td>Enter Savings Amount</td>

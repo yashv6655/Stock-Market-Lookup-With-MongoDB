@@ -192,7 +192,7 @@ export default function ExpensesTable({
           </tr>
           {users.map((user) => {
             if (user._id === userId) {
-              return user.expenses === [] || user.expenses === null ? (
+              return user.expenses.length === 0 || user.expenses === null ? (
                 <tr>
                   <th scope="row">Enter Expense Title</th>
                   <td>Enter Expense Amount</td>

@@ -66,9 +66,9 @@ export default function LoginForm() {
 
   return (
     <div>
-      <div className="login-box">
+      <div className="login-box" style={{ marginTop: "6rem" }}>
         <h2>Log In</h2>
-        <form>
+        <form className="col-sm">
           <div className="form-group">
             <label htmlFor="formGroupExampleInput">Log In</label>
             <input

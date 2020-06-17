@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-warning mb-5">
       <Link className="navbar-brand title-nav mr-5" to="/">
-        Stock Market Lookup
+        Stock Lookup
       </Link>
       <button
         className="navbar-toggler"
@@ -39,7 +39,7 @@ export default function Navbar() {
             to="/login"
             style={{ fontSize: "1.35rem" }}
           >
-            Login/Signup
+            Login/Signup For An Income Porfolio
           </Link>
           <Link
             className="nav-link mx-2"
