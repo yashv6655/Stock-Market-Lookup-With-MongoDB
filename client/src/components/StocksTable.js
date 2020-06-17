@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useContext } from "react";
+import { FinanceContext } from "../pages/FinancialSituation";
+import axios from "axios";
 
-export default function StocksTable({ users, userId }) {
+export default function StocksTable({ users, setUsers, userId }) {
   //Stock Properties
   const [stocks, setStocks] = useState([]);
   const [stockSymbol, setStockSymbol] = useState("");
@@ -8,6 +11,10 @@ export default function StocksTable({ users, userId }) {
   const [stockBuyPrice, setStockBuyPrice] = useState(0);
   const [stockCurrentPrice, setStockCurrentPrice] = useState(0);
   const [stockReturn, setStockReturn] = useState(0);
+  const [stockPurchasePrice, setStockPurchasePrice] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  const { setStocksTotal } = useContext(FinanceContext);
 
   return (
     <div className="col-sm">

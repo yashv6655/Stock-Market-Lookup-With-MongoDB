@@ -7,7 +7,9 @@ var Account = mongoose.model(
     password: { type: String },
     expenses: [{ name: String, amount: Number }],
     savings: [{ name: String, amount: Number }],
-    stocks: { type: Array, default: [{ name: "Stock", amount: 0 }] },
+    stocks: [
+      { stockSymbol: String, stockQuantity: Number, stockBuyPrice: Number },
+    ],
   },
   "accounts"
 );
