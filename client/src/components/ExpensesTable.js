@@ -100,6 +100,20 @@ export default function ExpensesTable({
     }
   };
 
+  function addInititalTotal() {
+    let temp = 0;
+    users.map((user) => {
+      if (user._id === userId) {
+        user.expenses.map((expense) => {
+          temp += expense.amount;
+        });
+      }
+      setExpensesTotal(temp);
+      return temp;
+    });
+    return temp;
+  }
+
   const deleteFromList = (id) => {
     //console.log(id);
     users.map(async (user) => {
@@ -217,7 +231,7 @@ export default function ExpensesTable({
           })}
           <tr>
             <th scope="row">Total: </th>
-            <td>${total}</td>
+            <td>${total === 0 ? addInititalTotal() : total}</td>
           </tr>
         </tbody>
       </table>

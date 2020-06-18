@@ -99,6 +99,20 @@ export default function SavingsTable({
     }
   };
 
+  function addInititalTotal() {
+    let temp = 0;
+    users.map((user) => {
+      if (user._id === userId) {
+        user.savings.map((saving) => {
+          temp += saving.amount;
+        });
+      }
+      setSavingsTotal(temp);
+      return temp;
+    });
+    return temp;
+  }
+
   const deleteFromList = (id) => {
     //console.log(id);
     users.map(async (user) => {
@@ -157,7 +171,7 @@ export default function SavingsTable({
         <thead>
           <tr>
             <th scope="col" className="lead">
-              Saving
+              Income
             </th>
             <th scope="col" className="lead">
               Amount
@@ -214,7 +228,7 @@ export default function SavingsTable({
           })}
           <tr>
             <th scope="row">Total: </th>
-            <td>${total}</td>
+            <td>${total === 0 ? addInititalTotal() : total}</td>
           </tr>
         </tbody>
       </table>
