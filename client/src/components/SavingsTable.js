@@ -144,7 +144,6 @@ export default function SavingsTable({
           .get("/accounts")
           .then((res) => {
             setUsers(res.data);
-            //updateSavings();
           })
           .catch((err) => console.log(err));
       }
@@ -188,10 +187,10 @@ export default function SavingsTable({
               <button className="fas fa-plus btn" onClick={addToList}></button>
             </td>
           </tr>
-          {users.map((user) => {
+          {users.map((user, index) => {
             if (user._id === userId) {
               return user.savings.length === 0 || user.savings === null ? (
-                <tr>
+                <tr key={index}>
                   <th scope="row">Enter Savings Title</th>
                   <td>Enter Savings Amount</td>
                 </tr>

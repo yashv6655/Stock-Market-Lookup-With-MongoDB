@@ -20,8 +20,9 @@ export default function Signup() {
     setConfirmPassword(e.target.value);
   };
 
-  const emailCheck = () => {
-    axios
+  const emailCheck = async () => {
+    let temp = false;
+    await axios
       .get("/accounts")
       .then((res) => {
         setUsers(res.data);
@@ -29,10 +30,14 @@ export default function Signup() {
       .catch((err) => console.log(err));
 
     users.map((user) => {
-      if (user.email === !email) {
-        return true;
-      } else return false;
+      if (user.email === email) {
+        console.log(user.email);
+        temp = false;
+      } else {
+        temp = false;
+      }
     });
+    return temp;
   };
 
   const handleSubmit = async (e) => {
@@ -53,18 +58,14 @@ export default function Signup() {
         });
     } else {
       if (password.length < 5) alert("Password Isn't Secure enough");
-      if (!emailCheck()) alert("Email Is Taken");
+      if (emailCheck()) alert("Email Is Taken");
       else alert("Passwords Don't Match");
       console.log("failed to signup");
     }
   };
 
   const passwordCheck = () => {
-    if (
-      password === confirmPassword &&
-      password.length > 5 &&
-      /[~`!#$%^&*+=\-[\]\\';,/{}|\\":<>?]/g.test(password)
-    ) {
+    if (password === confirmPassword) {
       return true;
     } else {
       return false;

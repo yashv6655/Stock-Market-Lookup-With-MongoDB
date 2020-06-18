@@ -60,8 +60,23 @@ export default function FinancialSituation() {
                 : "lead text-danger"
             }
           >
-            Without Stock Returns{" "}
+            Without Stock Expenses{" "}
             <strong>${savingsTotal - expensesTotal}</strong>
+          </p>
+        </div>
+        <div
+          style={{ background: "#b5b5b5" }}
+          className="d-flex py-1 text-white text-center justify-content-center row"
+        >
+          <p
+            className={
+              savingsTotal - (expensesTotal + stocksTotal) >= 0
+                ? "lead text-success"
+                : "lead text-danger"
+            }
+          >
+            With Stock Expenses{" "}
+            <strong>${savingsTotal - (expensesTotal + stocksTotal)}</strong>
           </p>
         </div>
       </div>

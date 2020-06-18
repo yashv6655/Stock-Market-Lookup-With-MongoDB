@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useContext } from "react";
 import { FinanceContext } from "../pages/FinancialSituation";
 import axios from "axios";
-import { useEffect } from "react";
+import { exportPassword } from "../pages/LoginForm";
 
 export default function StocksTable({ users, setUsers, userId }) {
   //Stock Properties
@@ -12,30 +12,33 @@ export default function StocksTable({ users, setUsers, userId }) {
   const [stockCurrentPrice, setStockCurrentPrice] = useState(0);
   const [stockBuyPrice, setStockBuyPrice] = useState(0);
   const [stockReturn, setStockReturn] = useState(0);
-  const [stockPurchasePrice, setStockPurchasePrice] = useState(0);
   const [total, setTotal] = useState(0);
   const [stockDataAPI, setStockDataAPI] = useState([]);
-
-  const [loading, setLoading] = useState(false);
 
   const [bool, setBool] = useState(false);
 
   const { setStocksTotal } = useContext(FinanceContext);
 
-  // useEffect(() => {
-  //   axios
-  //     .get(
-  //       `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${stockSymbol}&outputsize=compact&apikey=${process.env.REACT_API_KEY}`
-  //     )
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       for (let i in res.data["Time Series (Daily)"]) {
-  //         //console.log(res.data["Time Series (Daily)"][i]["4. close"]);
-  //         stockDataAPI.push(res.data["Time Series (Daily)"][i]["4. close"]);
-  //       }
-  //       //console.log(stockData[0]);
-  //     });
-  // });
+  const updateStocksTotal = async () => {
+    let tempTotal = 0;
+    await axios.get("/accounts").then((res) => {
+      setUsers(res.data);
+      users.map((user) => {
+        if (user._id === userId) {
+          user.stocks.map((stock) => {
+            tempTotal +=
+              parseFloat(stock.stockQuantity) *
+                parseFloat(stock.stockBuyPrice) +
+              parseFloat(stocks[0].stockQuantity) *
+                parseFloat(stocks[0].stockBuyPrice);
+            setTotal(tempTotal);
+            setStocksTotal(tempTotal);
+          });
+        }
+      });
+    });
+    return tempTotal;
+  };
 
   function getCurrentPrice(symbol) {
     stockDataAPI.length = 0;
@@ -57,12 +60,117 @@ export default function StocksTable({ users, setUsers, userId }) {
         setStockCurrentPrice(stockDataAPI[0]);
         setBool(true);
       });
-    // if (bool) return <td>{stockCurrentPrice}</td>;
-
-    // console.log(stockCurrentPrice);
-
-    //stockDataAPI[0] ? setLoading(true) : setLoading(false);
   }
+
+  const addToList = () => {
+    if (stockSymbol === "") {
+      alert("Field Can't be left blank");
+    } else {
+      users.map(async (user) => {
+        if (user._id === userId) {
+          stocks.push({
+            stockSymbol: stockSymbol,
+            stockQuantity: stockQuantity,
+            stockBuyPrice: stockBuyPrice,
+          });
+          setStockSymbol("GOOGL");
+          setStockQuantity(0);
+          await axios
+            .put("/accounts/" + userId, {
+              expenses: [...user.expenses],
+              password: exportPassword,
+              savings: [...user.savings],
+              stocks: [...user.stocks, ...stocks],
+            })
+            .then((res) => {
+              //console.log(res)
+            })
+            .catch((err) => {
+              console.log(err);
+              alert("There Was An Error");
+            });
+
+          //To avoid duplication of data into database
+          setStocks([]);
+
+          await axios.get("/accounts").then((res) => {
+            setUsers(res.data);
+            updateStocksTotal();
+          });
+        }
+      });
+    }
+  };
+
+  const subtractStocks = async (id) => {
+    let tempTotal = 0;
+    await axios
+      .get("/accounts")
+      .then((res) => {
+        setUsers(res.data);
+        users.map((user) => {
+          if (user._id === userId) {
+            user.stocks.map((stock) => {
+              if (stock._id === id) {
+                let temp = stock.stockBuyPrice * stock.stockQuantity;
+                tempTotal = total - temp;
+                setTotal(tempTotal);
+                setStocksTotal(tempTotal);
+              }
+            });
+          }
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const deleteFromList = (id) => {
+    users.map(async (user) => {
+      if (user._id === userId) {
+        subtractStocks(id);
+        let tempStocks = user.stocks.filter((item) => item._id !== id);
+        await axios.put("/accounts/" + userId, {
+          expenses: [...user.expenses],
+          password: exportPassword,
+          savings: [...user.savings],
+          stocks: [...tempStocks],
+        });
+      }
+      await axios
+        .get("/accounts")
+        .then((res) => setUsers(res.data))
+        .catch((err) => console.log(err));
+    });
+  };
+
+  const clearList = () => {
+    users.map(async (user) => {
+      if (user._id === userId) {
+        setStockSymbol("GOOGL");
+        setStockQuantity(0);
+        setStocks([]);
+        setTotal(0);
+        setStocksTotal(0);
+
+        await axios
+          .put("/accounts/" + userId, {
+            expenses: [...user.expenses],
+            password: exportPassword,
+            savings: [...user.savings],
+            stocks: [],
+          })
+          .then((res) => {
+            //
+          })
+          .catch((err) => console.log(err));
+
+        await axios
+          .get("/accounts")
+          .then((res) => setUsers(res.data))
+          .catch((err) => console.log(err));
+      }
+    });
+  };
 
   return (
     <div className="col-sm">
@@ -82,8 +190,8 @@ export default function StocksTable({ users, setUsers, userId }) {
           <tr>
             <th scope="row">
               <input
-                value={stockSymbol}
-                onChange={(e) => setStockSymbol(e.target.value)}
+                value={stockSymbol.toUpperCase()}
+                onChange={(e) => setStockSymbol(e.target.value.toUpperCase())}
                 className="form-control-calc"
               />
             </th>
@@ -95,26 +203,25 @@ export default function StocksTable({ users, setUsers, userId }) {
               />
             </td>
             <td>
-              <small>
-                <strong>$--</strong>
-              </small>
+              <input
+                type="number"
+                className="form-control-calc"
+                value={stockBuyPrice}
+                onChange={(e) => setStockBuyPrice(e.target.value)}
+              />
             </td>
-            <td>
-              <small>
-                <strong>$--</strong>
-              </small>
-            </td>
+            <td>$--</td>
             <td>--</td>
             <td>%</td>
             <td>
-              <button className="fas fa-plus btn"></button>
+              <button className="fas fa-plus btn" onClick={addToList}></button>
             </td>
           </tr>
 
-          {users.map((user) => {
+          {users.map((user, index) => {
             if (user._id === userId) {
               return user.stocks.length === 0 || user.stocks === null ? (
-                <tr>
+                <tr key={index}>
                   <th scope="row">Enter Stock Symbol</th>
                   <td>Enter Stock Quantity</td>
                 </tr>
@@ -125,23 +232,76 @@ export default function StocksTable({ users, setUsers, userId }) {
                       <th scope="row">{stock.stockSymbol}</th>
                       <td>{stock.stockQuantity}</td>
                       <td>${stock.stockBuyPrice}</td>
-                      <td>$</td>
-                      <td>$</td>
-                      <td>%</td>
-                      <td>
-                        <button
-                          className="fas fa-minus btn"
-                          //onClick={() => deleteFromList(saving._id)}
-                        ></button>
-                      </td>
                       <td role="alert">
                         <button
                           type="button"
                           className="btn btn-primary"
                           onClick={() => getCurrentPrice(stock.stockSymbol)}
                         >
-                          Get Current Price
+                          Get
                         </button>
+                      </td>
+                      {/* Return Price */}
+                      <td
+                        className={
+                          (stockCurrentPrice - stock.stockBuyPrice).toFixed(2) >
+                          0
+                            ? "text-success"
+                            : "text-danger"
+                        }
+                      >
+                        {bool
+                          ? (stockCurrentPrice - stock.stockBuyPrice).toFixed(2)
+                          : "-- "}
+                        <i
+                          className={
+                            (stockCurrentPrice - stock.stockBuyPrice).toFixed(
+                              2
+                            ) > 0
+                              ? "fas fa-arrow-up"
+                              : "fas fa-arrow-down"
+                          }
+                        ></i>
+                      </td>
+                      {/* End of Return Price */}
+                      {/* Percent Return */}
+                      <td
+                        className={
+                          (
+                            ((stockCurrentPrice - stock.stockBuyPrice) /
+                              stockCurrentPrice) *
+                            100
+                          ).toFixed(2) > 0
+                            ? "text-success"
+                            : "text-danger"
+                        }
+                      >
+                        {bool
+                          ? (
+                              ((stockCurrentPrice - stock.stockBuyPrice) /
+                                stockCurrentPrice) *
+                              100
+                            ).toFixed(2)
+                          : "--"}
+                        %
+                        <i
+                          class={
+                            (
+                              ((stockCurrentPrice - stock.stockBuyPrice) /
+                                stockCurrentPrice) *
+                              100
+                            ).toFixed(2) > 0
+                              ? "fas fa-arrow-up"
+                              : "fas fa-arrow-down"
+                          }
+                        ></i>
+                      </td>
+                      {/* End of Percent Return */}
+                      <td>
+                        <button
+                          className="fas fa-minus btn"
+                          onClick={() => deleteFromList(stock._id)}
+                        ></button>
                       </td>
                     </tr>
                   );
@@ -151,14 +311,22 @@ export default function StocksTable({ users, setUsers, userId }) {
           })}
 
           <tr>
-            <th scope="row">Total: </th>
-            <td>$1111111111</td>
+            <th scope="row">Total Spent: </th>
+            <td>${total}</td>
             <td>--</td>
-            {bool ? <td>${stockCurrentPrice}</td> : <td>0</td>}
+            {bool ? (
+              <td className="lead text-secondary">${stockCurrentPrice}</td>
+            ) : (
+              <td className="lead text-secondary">0</td>
+            )}
           </tr>
         </tbody>
       </table>
-      <button className="btn btn-primary mb-4" type="button">
+      <button
+        className="btn btn-primary mb-4"
+        type="button"
+        onClick={clearList}
+      >
         Clear All
       </button>
       {/* End of Stocks */}

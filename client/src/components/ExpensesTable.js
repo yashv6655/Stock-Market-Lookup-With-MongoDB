@@ -190,10 +190,10 @@ export default function ExpensesTable({
               <button className="fas fa-plus btn" onClick={addToList}></button>
             </td>
           </tr>
-          {users.map((user) => {
+          {users.map((user, index) => {
             if (user._id === userId) {
               return user.expenses.length === 0 || user.expenses === null ? (
-                <tr>
+                <tr key={index}>
                   <th scope="row">Enter Expense Title</th>
                   <td>Enter Expense Amount</td>
                 </tr>
