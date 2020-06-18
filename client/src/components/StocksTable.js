@@ -7,36 +7,39 @@ import { useEffect } from "react";
 export default function StocksTable({ users, setUsers, userId }) {
   //Stock Properties
   const [stocks, setStocks] = useState([]);
-  const [stockSymbol, setStockSymbol] = useState("GOOGL");
+  const [stockSymbol, setStockSymbol] = useState("");
   const [stockQuantity, setStockQuantity] = useState(0);
-  const [stockBuyPrice, setStockBuyPrice] = useState(0);
   const [stockCurrentPrice, setStockCurrentPrice] = useState(0);
+  const [stockBuyPrice, setStockBuyPrice] = useState(0);
   const [stockReturn, setStockReturn] = useState(0);
   const [stockPurchasePrice, setStockPurchasePrice] = useState(0);
   const [total, setTotal] = useState(0);
   const [stockDataAPI, setStockDataAPI] = useState([]);
+
   const [loading, setLoading] = useState(false);
 
-  const [databseSymbols, setDatabaseSymbols] = useState([]);
+  const [bool, setBool] = useState(false);
 
   const { setStocksTotal } = useContext(FinanceContext);
 
-  useEffect(() => {
-    axios
-      .get(
-        `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${stockSymbol}&outputsize=compact&apikey=${process.env.REACT_API_KEY}`
-      )
-      .then((res) => {
-        console.log(res.data);
-        for (let i in res.data["Time Series (Daily)"]) {
-          //console.log(res.data["Time Series (Daily)"][i]["4. close"]);
-          stockDataAPI.push(res.data["Time Series (Daily)"][i]["4. close"]);
-        }
-        //console.log(stockData[0]);
-      });
-  });
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${stockSymbol}&outputsize=compact&apikey=${process.env.REACT_API_KEY}`
+  //     )
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       for (let i in res.data["Time Series (Daily)"]) {
+  //         //console.log(res.data["Time Series (Daily)"][i]["4. close"]);
+  //         stockDataAPI.push(res.data["Time Series (Daily)"][i]["4. close"]);
+  //       }
+  //       //console.log(stockData[0]);
+  //     });
+  // });
 
   function getCurrentPrice(symbol) {
+    stockDataAPI.length = 0;
+    setBool(false);
     axios
       .get(
         `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=compact&apikey=${process.env.REACT_API_KEY}`
@@ -44,15 +47,21 @@ export default function StocksTable({ users, setUsers, userId }) {
       .then((res) => {
         console.log(res.data);
         for (let i in res.data["Time Series (Daily)"]) {
-          console.log(res.data["Time Series (Daily)"][i]["4. close"]);
+          if (stockDataAPI === 100) {
+            setStockDataAPI([]);
+          }
+          //console.log(res.data["Time Series (Daily)"][i]["4. close"]);
           stockDataAPI.push(res.data["Time Series (Daily)"][i]["4. close"]);
         }
-        console.log(stockDataAPI[0]);
+        //console.log(stockDataAPI[0]);
+        setStockCurrentPrice(stockDataAPI[0]);
+        setBool(true);
       });
+    // if (bool) return <td>{stockCurrentPrice}</td>;
 
-    stockDataAPI[0] ? setLoading(true) : setLoading(false);
+    // console.log(stockCurrentPrice);
 
-    return loading ? <td>loading</td> : <td>{stockDataAPI[0]}</td>;
+    //stockDataAPI[0] ? setLoading(true) : setLoading(false);
   }
 
   return (
@@ -61,7 +70,7 @@ export default function StocksTable({ users, setUsers, userId }) {
       <table className="table table-primary">
         <thead>
           <tr>
-            <th scope="col">Stock</th>
+            <th scope="col">Stock Symbol</th>
             <th scope="col">Quantity</th>
             <th scope="col">Buy Price</th>
             <th scope="col">Current Price</th>
@@ -87,18 +96,18 @@ export default function StocksTable({ users, setUsers, userId }) {
             </td>
             <td>
               <small>
-                <strong>${stockDataAPI[0]}</strong>
+                <strong>$--</strong>
               </small>
             </td>
             <td>
               <small>
-                <strong>${stockDataAPI[0]}</strong>
+                <strong>$--</strong>
               </small>
             </td>
-            <td>$123123</td>
+            <td>--</td>
             <td>%</td>
             <td>
-              <button className="fas fa-minus btn"></button>
+              <button className="fas fa-plus btn"></button>
             </td>
           </tr>
 
@@ -116,7 +125,6 @@ export default function StocksTable({ users, setUsers, userId }) {
                       <th scope="row">{stock.stockSymbol}</th>
                       <td>{stock.stockQuantity}</td>
                       <td>${stock.stockBuyPrice}</td>
-                      {() => getCurrentPrice(stock.stockSymbol)}
                       <td>$</td>
                       <td>$</td>
                       <td>%</td>
@@ -125,6 +133,15 @@ export default function StocksTable({ users, setUsers, userId }) {
                           className="fas fa-minus btn"
                           //onClick={() => deleteFromList(saving._id)}
                         ></button>
+                      </td>
+                      <td role="alert">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={() => getCurrentPrice(stock.stockSymbol)}
+                        >
+                          Get Current Price
+                        </button>
                       </td>
                     </tr>
                   );
@@ -136,9 +153,14 @@ export default function StocksTable({ users, setUsers, userId }) {
           <tr>
             <th scope="row">Total: </th>
             <td>$1111111111</td>
+            <td>--</td>
+            {bool ? <td>${stockCurrentPrice}</td> : <td>0</td>}
           </tr>
         </tbody>
       </table>
+      <button className="btn btn-primary mb-4" type="button">
+        Clear All
+      </button>
       {/* End of Stocks */}
     </div>
   );

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [users, setUsers] = useState([]);
 
   const emailChange = (e) => {
     setEmail(e.target.value);
@@ -19,9 +20,24 @@ export default function Signup() {
     setConfirmPassword(e.target.value);
   };
 
+  const emailCheck = () => {
+    axios
+      .get("/accounts")
+      .then((res) => {
+        setUsers(res.data);
+      })
+      .catch((err) => console.log(err));
+
+    users.map((user) => {
+      if (user.email === !email) {
+        return true;
+      } else return false;
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (passwordCheck()) {
+    if (passwordCheck() && emailCheck()) {
       await axios
         .post("/accounts", {
           email: email,
@@ -37,6 +53,7 @@ export default function Signup() {
         });
     } else {
       if (password.length < 5) alert("Password Isn't Secure enough");
+      if (!emailCheck()) alert("Email Is Taken");
       else alert("Passwords Don't Match");
       console.log("failed to signup");
     }

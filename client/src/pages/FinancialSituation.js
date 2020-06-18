@@ -60,7 +60,8 @@ export default function FinancialSituation() {
                 : "lead text-danger"
             }
           >
-            ${savingsTotal - expensesTotal}
+            Without Stock Returns{" "}
+            <strong>${savingsTotal - expensesTotal}</strong>
           </p>
         </div>
       </div>
