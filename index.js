@@ -12,4 +12,8 @@ app.listen(process.env.PORT || 4000, () =>
   console.log("Server started at : 4000")
 );
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+}
+
 app.use("/accounts", accountRoutes);

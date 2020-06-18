@@ -47,7 +47,7 @@ class Stock extends React.Component {
     // this.state.stockSymbolDisplay = stockSymbol;
     let API_Call_ALPHA = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${stockSymbol}&outputsize=${stockDisplaytype}&apikey=${API_KEY}`;
     let API_Call_SMA = `https://www.alphavantage.co/query?function=SMA&symbol=${stockSymbol}&interval=daily&time_period=2&series_type=open&apikey=${API_KEY}`;
-    let API_CALL_NEWS = `https://gnews.io/api/v3/search?q=${stockSymbol}&max=10&token=ffff71b35644b14ad953a6a4a594aea6`;
+    let API_CALL_NEWS = `https://gnews.io/api/v3/search?q=${stockSymbol}&max=10&token=${NEWS_API_KEY}`;
     let stockChartXValuesFunction = [];
     let stockChartYValuesFunction = [];
     let smaXValuesFunction = [];
