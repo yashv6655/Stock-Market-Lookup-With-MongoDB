@@ -186,6 +186,7 @@ export default function ExpensesTable({
             <th scope="row">
               <input
                 className="form-control-calc"
+                placeholder="Ex. Utilities, EMI, Mortgage"
                 type="text"
                 value={expensesName}
                 onChange={(e) => setExpensesName(e.target.value)}

@@ -183,6 +183,7 @@ export default function SavingsTable({
             <th scope="row">
               <input
                 className="form-control-calc"
+                placeholder="Ex. Salary"
                 type="text"
                 value={savingsName}
                 onChange={(e) => setSavingsName(e.target.value)}

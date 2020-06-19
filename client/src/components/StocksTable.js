@@ -11,7 +11,6 @@ export default function StocksTable({ users, setUsers, userId }) {
   const [stockQuantity, setStockQuantity] = useState(0);
   const [stockCurrentPrice, setStockCurrentPrice] = useState(0);
   const [stockBuyPrice, setStockBuyPrice] = useState(0);
-  const [stockReturn, setStockReturn] = useState(0);
   const [total, setTotal] = useState(0);
   const [stockDataAPI, setStockDataAPI] = useState([]);
 
@@ -27,10 +26,9 @@ export default function StocksTable({ users, setUsers, userId }) {
         if (user._id === userId) {
           user.stocks.map((stock) => {
             tempTotal +=
-              parseFloat(stock.stockQuantity) *
-                parseFloat(stock.stockBuyPrice) +
-              parseFloat(stocks[0].stockQuantity) *
-                parseFloat(stocks[0].stockBuyPrice);
+              parseFloat(stock.stockBuyPrice) *
+                parseFloat(stock.stockQuantity) +
+              stocks[0].stockQuantity * stocks[0].stockBuyPrice;
             setTotal(tempTotal);
             setStocksTotal(tempTotal);
           });
@@ -75,6 +73,7 @@ export default function StocksTable({ users, setUsers, userId }) {
           });
           setStockSymbol("GOOGL");
           setStockQuantity(0);
+          setStockBuyPrice(0);
           await axios
             .put("/accounts/" + userId, {
               expenses: [...user.expenses],
@@ -124,6 +123,20 @@ export default function StocksTable({ users, setUsers, userId }) {
       .catch((err) => console.log(err));
   };
 
+  function addInitialTotal() {
+    let temp = 0;
+    users.map((user) => {
+      if (user._id === userId) {
+        user.stocks.map((stock) => {
+          temp += stock.stockQuantity * stock.stockBuyPrice;
+        });
+      }
+      setStocksTotal(temp);
+      return temp;
+    });
+    return temp;
+  }
+
   const deleteFromList = (id) => {
     users.map(async (user) => {
       if (user._id === userId) {
@@ -151,7 +164,7 @@ export default function StocksTable({ users, setUsers, userId }) {
         setStocks([]);
         setTotal(0);
         setStocksTotal(0);
-
+        setStockBuyPrice(0);
         await axios
           .put("/accounts/" + userId, {
             expenses: [...user.expenses],
@@ -182,7 +195,7 @@ export default function StocksTable({ users, setUsers, userId }) {
             <th scope="col">Quantity</th>
             <th scope="col">Buy Price</th>
             <th scope="col">Current Price</th>
-            <th scope="col">Return Price</th>
+            <th scope="col">Price Increase/Decrease</th>
             <th scope="col">Return %</th>
           </tr>
         </thead>
@@ -312,12 +325,12 @@ export default function StocksTable({ users, setUsers, userId }) {
 
           <tr>
             <th scope="row">Total Spent: </th>
-            <td>${total}</td>
-            <td>--</td>
+            <td>${total === 0 ? addInitialTotal() : total}</td>
+            <td className="text-primary">Current Price:</td>
             {bool ? (
-              <td className="lead text-secondary">${stockCurrentPrice}</td>
+              <td className="lead text-primary">${stockCurrentPrice}</td>
             ) : (
-              <td className="lead text-secondary">0</td>
+              <td className="lead text-primary">0</td>
             )}
           </tr>
         </tbody>
