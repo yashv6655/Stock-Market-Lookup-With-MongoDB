@@ -5,7 +5,7 @@ export default function CalculatorDisplay() {
   return (
     <div>
       <BudgetCalculator title="Expenses" localStorageTitle="expenses" />
-      <BudgetCalculator title="Savings" localStorageTitle="savings" />
+      <BudgetCalculator title="Income" localStorageTitle="savings" />
     </div>
   );
 }
