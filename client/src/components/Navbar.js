@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-warning mb-5">
+    <nav
+      className="navbar navbar-expand-lg navbar-light mb-5"
+      style={{ backgroundColor: "#fb5724" }}
+    >
       <Link className="navbar-brand title-nav mr-5" to="/">
         Stock Lookup
       </Link>
